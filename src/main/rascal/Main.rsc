@@ -1,4 +1,27 @@
 module Main
+import IO;
+import String;
+import List;
+import Set;
+import Map;
+import util::Math;
+import util::FileSystem;
+// Data structure for metrics
+data Metrics = metrics(
+    int linesOfCode,
+    int numberOfUnits,
+    map[str, real] unitSizeDistribution,
+    map[str, real] unitComplexityDistribution,
+    real duplicationPercentage,
+    str volumeScore,
+    str unitSizeScore,
+    str unitComplexityScore,
+    str duplicationScore,
+    str analysabilityScore,
+    str changeabilityScore,
+    str testabilityScore,
+    str overallMaintainabilityScore
+);
 // Print formatted analysis results
 public void printMetrics(Metrics m) {
     println("lines of code: <m.linesOfCode>");
