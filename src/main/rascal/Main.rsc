@@ -76,6 +76,20 @@ public str classifyComplexity(int complexity) {
     if (complexity <= 10) return "high";
     return "very high";
 }
+
+// Calculate cyclomatic complexity for code - simple text-based approach
+public int cyclomaticComplexity(str methodCode) {
+    int complexity = 1;
+    complexity += (0 | it + 1 | /if/ := methodCode);
+    complexity += (0 | it + 1 | /else/ := methodCode);
+    complexity += (0 | it + 1 | /case/ := methodCode);
+    complexity += (0 | it + 1 | /catch/ := methodCode);
+    complexity += (0 | it + 1 | /for/ := methodCode);
+    complexity += (0 | it + 1 | /while/ := methodCode);
+    complexity += (0 | it + 1 | /\?/ := methodCode);
+    return complexity;
+}
+
 public int main() {
     try {
         loc projectRoot = |file:///Users/dev/java_projects|;
