@@ -46,6 +46,36 @@ public void printMetrics(Metrics m) {
     println("testability score: <m.testabilityScore>");
     println("overall maintainability score: <m.overallMaintainabilityScore>");
 }
+
+// Calculate lines of code for all Java files
+public int calculateVolume(set[loc] javaFiles) {
+    int totalLines = 0;
+    for (file <- javaFiles) {
+        try {
+            int lineCount = (0 | it + 1 | _ <- readFileLines(file));
+            totalLines += lineCount;
+        } catch: {
+            continue;
+        }
+    }
+    return totalLines;
+}
+
+// Classify unit size in lines of code
+public str classifyUnitSize(int linesOfCode) {
+    if (linesOfCode <= 15) return "simple";
+    if (linesOfCode <= 30) return "moderate";
+    if (linesOfCode <= 60) return "high";
+    return "very high";
+}
+
+// Classify complexity level
+public str classifyComplexity(int complexity) {
+    if (complexity <= 3) return "simple";
+    if (complexity <= 7) return "moderate";
+    if (complexity <= 10) return "high";
+    return "very high";
+}
 public int main() {
     try {
         loc projectRoot = |file:///Users/dev/java_projects|;
