@@ -90,6 +90,41 @@ public int cyclomaticComplexity(str methodCode) {
     return complexity;
 }
 
+// Calculate distribution of unit sizes
+public map[str, real] calculateUnitSizeDistribution(list[str] allLines) {
+    map[str, int] distribution = ("simple": 0, "moderate": 0, "high": 0, "very high": 0);
+    int totalUnits = 0;
+    
+    int currentMethodStart = -1;
+    for (i <- [0 .. size(allLines)]) {
+        str line = trim(allLines[i]);
+        if (contains(line, "public") && contains(line, "(")) {
+            if (currentMethodStart >= 0) {
+                int unitLines = i - currentMethodStart;
+                str classification = classifyUnitSize(unitLines);
+                distribution[classification] = distribution[classification] + 1;
+                totalUnits += 1;
+            }
+            currentMethodStart = i;
+        }
+    }
+    
+    if (currentMethodStart >= 0) {
+        int unitLines = size(allLines) - currentMethodStart;
+        str classification = classifyUnitSize(unitLines);
+        distribution[classification] = distribution[classification] + 1;
+        totalUnits += 1;
+    }
+    
+    map[str, real] result = ("simple": 0.0, "moderate": 0.0, "high": 0.0, "very high": 0.0);
+    if (totalUnits > 0) {
+        for (key <- distribution) {
+            result[key] = (toReal(distribution[key]) / toReal(totalUnits)) * 100.0;
+        }
+    }
+    
+    return result;
+}
 public int main() {
     try {
         loc projectRoot = |file:///Users/dev/java_projects|;
