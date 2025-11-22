@@ -125,6 +125,47 @@ public map[str, real] calculateUnitSizeDistribution(list[str] allLines) {
     
     return result;
 }
+
+// Calculate distribution of complexity levels
+public map[str, real] calculateComplexityDistribution(list[str] allLines) {
+    map[str, int] distribution = ("simple": 0, "moderate": 0, "high": 0, "very high": 0);
+    int totalUnits = 0;
+    
+    int currentMethodStart = -1;
+    str currentMethodCode = "";
+    
+    for (i <- [0 .. size(allLines)]) {
+        str line = allLines[i];
+        if (contains(trim(line), "public") && contains(line, "(")) {
+            if (currentMethodStart >= 0) {
+                int complexity = cyclomaticComplexity(currentMethodCode);
+                str classification = classifyComplexity(complexity);
+                distribution[classification] = distribution[classification] + 1;
+                totalUnits += 1;
+            }
+            currentMethodStart = i;
+            currentMethodCode = "";
+        }
+        currentMethodCode = currentMethodCode + line + "\n";
+    }
+    
+    if (currentMethodStart >= 0) {
+        int complexity = cyclomaticComplexity(currentMethodCode);
+        str classification = classifyComplexity(complexity);
+        distribution[classification] = distribution[classification] + 1;
+        totalUnits += 1;
+    }
+    
+    map[str, real] result = ("simple": 0.0, "moderate": 0.0, "high": 0.0, "very high": 0.0);
+    if (totalUnits > 0) {
+        for (key <- distribution) {
+            result[key] = (toReal(distribution[key]) / toReal(totalUnits)) * 100.0;
+        }
+    }
+    
+    return result;
+}
+
 public int main() {
     try {
         loc projectRoot = |file:///Users/dev/java_projects|;
